@@ -22,6 +22,16 @@ npx --version
 
 ## 安裝方式
 
+### 方法零：最省事——把網址貼給 Agent
+
+不熟終端機的話，直接在 Claude Code、Codex 或 Antigravity 的對話欄貼上：
+
+```
+https://github.com/hsuyiping-rgb/agent-skills
+```
+
+然後說一句「幫我安裝這個 repo 裡的 grilling skill」。Agent 會自己執行安裝指令（或把 `skills/grilling/` 複製到正確位置），中途跳出「是否允許執行指令」時按允許即可。
+
 ### 方法一：skills.sh 安裝器（Claude Code、Codex 等皆可）
 
 ```bash

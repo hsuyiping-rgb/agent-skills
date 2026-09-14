@@ -8,6 +8,18 @@
 |---|---|---|
 | grilling | 針對你的計畫、決策或想法「無情追問」，用設計樹（design tree）一輪一輪提問，直到沒有任何隱含假設為止。適合在動工前做壓力測試。 | [mattpocock/skills](https://github.com/mattpocock/skills)（MIT） |
 
+## 前置需求
+
+安裝指令使用 `npx`，這是 **Node.js** 附帶的工具（Node Package eXecute），會臨時下載 `skills` 安裝器執行一次，用完不佔空間，不需要事先 `npm install`。
+
+先確認電腦有 Node.js：
+
+```bash
+npx --version
+```
+
+有印出版本號即可；沒有的話到 <https://nodejs.org> 安裝 LTS 版。
+
 ## 安裝方式
 
 ### 方法一：skills.sh 安裝器（Claude Code、Codex 等皆可）

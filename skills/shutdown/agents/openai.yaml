@@ -1,0 +1,4 @@
+interface:
+  display_name: "收工同步"
+  short_description: "改寫交接檔、commit＋push、寫 Obsidian 紀錄"
+  default_prompt: "收工，請使用 $shutdown 保存今天的進度。"

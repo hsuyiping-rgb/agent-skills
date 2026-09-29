@@ -1,0 +1,4 @@
+interface:
+  display_name: "開工接續"
+  short_description: "讀交接檔、檢查 git，告訴我上次做到哪"
+  default_prompt: "開工，請使用 $startup 告訴我上次做到哪。"

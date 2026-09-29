@@ -1,0 +1,4 @@
+interface:
+  display_name: "專案初始化"
+  short_description: "建立 agents.md＋handoff.md、GitHub 私有 repo、Obsidian 筆記"
+  default_prompt: "請使用 $project-init 初始化這個專案。"

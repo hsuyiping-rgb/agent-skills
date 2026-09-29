@@ -1,70 +1,109 @@
 # Agent Skills 分享包
 
-本資料夾收錄可直接安裝到 Claude Code、Codex 等 Agent 的 skill。
+可同時安裝到 **Claude Code、Codex（GPT）、Antigravity** 的技能包：一次設定好環境，之後在任何電腦、用任何 Agent 都能接續工作，也能直接產出 Office 文件。
 
-## 目前收錄
+## 收錄技能
 
-| Skill | 功能 | 出處 |
-|---|---|---|
-| grilling | 針對你的計畫、決策或想法「無情追問」，用設計樹（design tree）一輪一輪提問，直到沒有任何隱含假設為止。適合在動工前做壓力測試。 | [mattpocock/skills](https://github.com/mattpocock/skills)（MIT） |
+| 技能 | 說這句話就會啟動 | 做什麼 |
+|------|-----------------|--------|
+| `agent-kit` | 「安裝懶人包」「環境健檢」 | 檢查工具，串接 GitHub、NotebookLM、chezmoi、Obsidian（選用），把技能部署到三個平台 |
+| `project-init` | 「初始化專案」 | 建 `agents.md`（專案藍圖）＋`handoff.md`（交接檔）→ GitHub 私有 repo → Obsidian 筆記 |
+| `startup` | 「開工」「上次做到哪」 | 讀交接檔、git status＋fetch，提醒技能有新版，建議下一步 |
+| `shutdown` | 「收工」「下班」 | 改寫 `handoff.md`、commit＋push、寫 Obsidian，提醒 chezmoi 同步 |
+| `office-docs` | 「做成 Word／PPT／Excel」 | 產生 .docx／.pptx／.xlsx，中文字型不跑掉，轉圖目視檢查版面 |
+| `grilling` | 「grill 我這個計畫」 | 動工前一輪一輪追問，直到沒有隱含假設（[mattpocock/skills](https://github.com/mattpocock/skills)，MIT） |
 
-## 前置需求
+## 整套怎麼運作
 
-安裝指令使用 `npx`，這是 **Node.js** 附帶的工具（Node Package eXecute），會臨時下載 `skills` 安裝器執行一次，用完不佔空間，不需要事先 `npm install`。
-
-先確認電腦有 Node.js：
-
-```bash
-npx --version
+```
+初始化專案 ──► agents.md（藍圖）＋ handoff.md（交接檔）
+                     │
+   開工（讀） ◄──────┼──────► 收工（寫）
+                     │
+   GitHub：專案版本備份     chezmoi：技能跨電腦同步
+   NotebookLM：資料研究     Obsidian：詳細工作筆記
 ```
 
-有印出版本號即可；沒有的話到 <https://nodejs.org> 安裝 LTS 版。
+`agents.md` 採跨 Agent 開放標準，三個平台都讀得懂：今天用 Claude 收工，明天在另一台電腦用 Codex 開工，也接得上。
 
-## 安裝方式
+## 安裝
 
 ### 方法零：最省事——把網址貼給 Agent
 
-不熟終端機的話，直接在 Claude Code、Codex 或 Antigravity 的對話欄貼上：
+在 Claude Code、Codex 或 Antigravity 的對話框貼上：
 
 ```
 https://github.com/hsuyiping-rgb/agent-skills
 ```
 
-然後說一句「幫我安裝這個 repo 裡的 grilling skill」。Agent 會自己執行安裝指令（或把 `skills/grilling/` 複製到正確位置），中途跳出「是否允許執行指令」時按允許即可。
+然後說「幫我下載這個 repo，執行 install 腳本安裝全部技能，再用 agent-kit 幫我設定環境」。中途跳出「是否允許執行指令」時按允許。
 
-### 方法一：skills.sh 安裝器（Claude Code、Codex 等皆可）
-
-```bash
-npx skills@latest add hsuyiping-rgb/agent-skills
-```
-
-執行後會列出本 repo 的 skill，勾選 `grilling` 並選擇要安裝到哪個 Agent 即可。
-
-### 方法二：手動複製（Claude Code）
-
-把 `skills/grilling/` 整個資料夾複製到：
-
-- 專案層級：`<你的專案>/.claude/skills/grilling/`
-- 全域層級：`~/.claude/skills/grilling/`
-
-### 方法三：直接安裝原作者版本
+### 方法一：下載後執行安裝腳本（一次裝到三個平台）
 
 ```bash
-npx skills@latest add mattpocock/skills
+git clone https://github.com/hsuyiping-rgb/agent-skills.git
+cd agent-skills
 ```
 
-## 使用方式
+Windows（先預覽、再安裝）：
 
-安裝後在對話中說「grill 我這個計畫」「幫我壓力測試這個想法」，或直接輸入 `/grilling`，Agent 會開始一輪一輪提問，每題附上建議答案，等你回答後再推進下一輪。
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install.ps1 -DryRun
+powershell -ExecutionPolicy Bypass -File .\install.ps1
+```
+
+macOS／Linux：
+
+```bash
+bash install.sh --dry-run
+bash install.sh
+```
+
+- 自動偵測電腦裝了哪些 Agent，只裝到存在的平台；也可指定：`-Targets codex,antigravity`、`-Skills office-docs,grilling`
+- 已有同名但內容不同的技能會**跳過**；加 `-Force`（`--force`）才覆蓋，舊版備份到 `~/.agent-kit-backup/<時間>/`
+- 裝完**重開每個 Agent**，再說「安裝懶人包」，讓 `agent-kit` 完成 GitHub、NotebookLM、chezmoi 串接
+
+### 方法二：skills.sh 安裝器
+
+需要 Node.js（`npx --version` 有版本號即可，沒有請到 <https://nodejs.org> 裝 LTS 版）：
+
+```bash
+npx skills@latest add hsuyiping-rgb/agent-skills --agent claude-code,codex,antigravity
+```
+
+只裝單一技能：加上 `--skill grilling`（或其他技能名稱）。
+
+### 方法三：手動複製
+
+把 `skills/<技能名>/` 整個資料夾複製到：
+
+| 平台 | 全域技能資料夾 |
+|------|---------------|
+| Claude Code | `~/.claude/skills/` |
+| Codex | `~/.codex/skills/` |
+| Antigravity | `~/.gemini/antigravity/skills/` |
+
+> ChatGPT 網頁版不支援 skills；GPT 使用者請在 Codex（CLI、App 或 IDE 擴充）上安裝。
+
+## 需要的工具
+
+| 工具 | 用途 | 必要性 |
+|------|------|--------|
+| Git、GitHub CLI（`gh`） | 專案版本備份 | 用到 GitHub 時 |
+| uv | NotebookLM CLI、Office 文件腳本 | 建議 |
+| chezmoi | 技能跨電腦同步 | 選用 |
+| LibreOffice | Office 文件轉圖檢查 | 選用 |
+
+不確定缺什麼？裝好技能後說「環境健檢」，`agent-kit` 會列出來並在你同意後代為安裝。
+
+## 安全原則
+
+- 登入（`gh auth login`、`nlm login`）一律由使用者本人在瀏覽器完成，Agent 不經手密碼與 token
+- chezmoi 只同步 `skills/` 資料夾；`config.toml`、`auth.json`、`.claude.json`、`.env` 等含金鑰檔案**永不**納管
+- 修改任何 MCP 設定檔前先備份；建立 GitHub repo 一律預設私有
+- 安裝軟體、建 repo、push 前都會先徵得同意
 
 ## 授權
 
-`grilling` 原作者為 Matt Pocock，以 MIT 授權釋出；本資料夾保留原始 LICENSE 檔。
-
-### 一次安裝到 Claude Code、Codex、Antigravity
-
-```bash
-npx skills@latest add hsuyiping-rgb/agent-skills --skill grilling --agent claude-code,codex,antigravity
-```
-
-> 注意：ChatGPT 網頁版不支援 skills；GPT 使用者請在 Codex（CLI 或 IDE 擴充）上安裝。
+- `grilling`：原作者 Matt Pocock，MIT 授權，資料夾內保留原始 LICENSE
+- 其餘技能：本 repo 作者自製，歡迎教育現場自由使用與修改
